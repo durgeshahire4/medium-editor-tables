@@ -1,4 +1,12 @@
 
+0.6.1 / 2016-10-14
+==================
+* Table UI get distorted when Row or Column added
+
+0.6.0 / 2016-10-13
+==================
+* Add restrict table inside table
+
 0.5.3 / 2016-09-27
 ==================
 * Fix detached tbody from table
