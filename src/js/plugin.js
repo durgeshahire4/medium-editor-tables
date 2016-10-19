@@ -7,7 +7,7 @@ MediumEditorTable = MediumEditor.extensions.form.extend({
 
     aria: 'create table',
     action: 'table',
-    contentDefault: 'TBL',
+    contentDefault: '<i class="icon-table"></i>',
     contentFA: '<i class="fa fa-table"></i>',
 
     handleClick: function (event) {
@@ -58,7 +58,8 @@ MediumEditorTable = MediumEditor.extensions.form.extend({
                 }.bind(this),
                 ownerDocument: this.document,
                 rows: this.rows || 10,
-                columns: this.columns || 10
+                columns: this.columns || 10,
+                base: this.base
             });
 
             this.table = new Table(this.base);

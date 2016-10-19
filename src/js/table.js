@@ -15,7 +15,7 @@ Table.prototype = {
         var html = this._html(rows, cols);
 
         this._editor.pasteHTML(
-            '<table class="medium-editor-table" id="medium-editor-table"' +
+            '<table class="medium-editor-table table-resizable" id="medium-editor-table"' +
             ' width="100%">' +
             '<tbody id="medium-editor-table-tbody">' +
             html +
@@ -35,6 +35,14 @@ Table.prototype = {
         tbody.removeAttribute('id');
         table.removeAttribute('id');
         placeCaretAtNode(this._doc, table.querySelector('td'), true);
+
+        //Resize stuff code here;
+        var newTableObject = $('.table-resizable').not('.ui-resizable');
+        $(newTableObject).resizable({
+          resize: function(event, element) {
+            this._editor.trigger('editableInput');
+          }
+        });
 
         this._editor.checkSelection();
     },
