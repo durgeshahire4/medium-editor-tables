@@ -39,9 +39,9 @@ Table.prototype = {
         //Resize stuff code here;
         var newTableObject = $('.table-resizable').not('.ui-resizable');
         $(newTableObject).resizable({
-          resize: function(event, element) {
-            this._editor.trigger('editableInput');
-          }
+            resize: function (event, element) {
+                this._editor.trigger('editableInput');
+            }
         });
 
         this._editor.checkSelection();
