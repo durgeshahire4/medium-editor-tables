@@ -224,6 +224,7 @@ function Builder(options) {
 Builder.prototype = {
     init: function (options) {
         this.options = options;
+        this._base = options.base;
         this._doc = options.ownerDocument || document;
         this._root = this._doc.createElement('div');
         this._root.className = 'medium-editor-table-builder';
@@ -243,46 +244,49 @@ Builder.prototype = {
         this._toolbar.appendChild(spanRow);
         var addRowBefore = this._doc.createElement('button');
         addRowBefore.title = 'Add row before';
-        addRowBefore.innerHTML = '<i class="fa fa-long-arrow-up"></i>';
+        addRowBefore.innerHTML = '<i class="icon-arrow-up"></i>';
         addRowBefore.onclick = this.addRow.bind(this, true);
         this._toolbar.appendChild(addRowBefore);
 
         var addRowAfter = this._doc.createElement('button');
         addRowAfter.title = 'Add row after';
-        addRowAfter.innerHTML = '<i class="fa fa-long-arrow-down"></i>';
+        addRowAfter.innerHTML = '<i class="icon-arrow-down"></i>';
         addRowAfter.onclick = this.addRow.bind(this, false);
         this._toolbar.appendChild(addRowAfter);
 
         var remRow = this._doc.createElement('button');
         remRow.title = 'Remove row';
-        remRow.innerHTML = '<i class="fa fa-close"></i>';
+        remRow.innerHTML = '<i class="icon-x"></i>';
         remRow.onclick = this.removeRow.bind(this);
         this._toolbar.appendChild(remRow);
+
+        var br = this._doc.createElement('br');
+        this._toolbar.appendChild(br);
 
         var spanCol = this._doc.createElement('span');
         spanCol.innerHTML = 'Column:';
         this._toolbar.appendChild(spanCol);
         var addColumnBefore = this._doc.createElement('button');
         addColumnBefore.title = 'Add column before';
-        addColumnBefore.innerHTML = '<i class="fa fa-long-arrow-left"></i>';
+        addColumnBefore.innerHTML = '<i class="icon-arrow-left"></i>';
         addColumnBefore.onclick = this.addColumn.bind(this, true);
         this._toolbar.appendChild(addColumnBefore);
 
         var addColumnAfter = this._doc.createElement('button');
         addColumnAfter.title = 'Add column after';
-        addColumnAfter.innerHTML = '<i class="fa fa-long-arrow-right"></i>';
+        addColumnAfter.innerHTML = '<i class="icon-arrow-right"></i>';
         addColumnAfter.onclick = this.addColumn.bind(this, false);
         this._toolbar.appendChild(addColumnAfter);
 
         var remColumn = this._doc.createElement('button');
         remColumn.title = 'Remove column';
-        remColumn.innerHTML = '<i class="fa fa-close"></i>';
+        remColumn.innerHTML = '<i class="icon-x"></i>';
         remColumn.onclick = this.removeColumn.bind(this);
         this._toolbar.appendChild(remColumn);
 
         var remTable = this._doc.createElement('button');
         remTable.title = 'Remove table';
-        remTable.innerHTML = '<i class="fa fa-trash-o"></i>';
+        remTable.innerHTML = '<i class="icon-trash"></i>';
         remTable.onclick = this.removeTable.bind(this);
         this._toolbar.appendChild(remTable);
 
@@ -307,7 +311,7 @@ Builder.prototype = {
 
     setEditor: function (range, restrictNestedTable) {
         this._range = range;
-        this._toolbar.style.display = 'block';
+        this._toolbar.style.display = 'inline-block';
         if (restrictNestedTable) {
             var elements = this._doc.getElementsByClassName('medium-editor-table-builder-grid');
             elements[0].style.display = 'none';
@@ -359,6 +363,8 @@ Builder.prototype = {
             tbody.appendChild(tr);
         }
         this.options.onClick(0, 0);
+        //Trigger event for editor update;
+        this._base.trigger('editableInput');
     },
 
     removeRow: function (e) {
@@ -368,6 +374,8 @@ Builder.prototype = {
             selectedTR = this.getParentType(this._range, 'tr');
         tbody.removeChild(selectedTR);
         this.options.onClick(0, 0);
+        //Trigger event for editor update;
+        this._base.trigger('editableInput');
     },
 
     addColumn: function (before, e) {
@@ -392,6 +400,8 @@ Builder.prototype = {
         }
 
         this.options.onClick(0, 0);
+        //Trigger event for editor update;
+        this._base.trigger('editableInput');
     },
 
     removeColumn: function (e) {
@@ -407,6 +417,8 @@ Builder.prototype = {
             tbody.childNodes[i].removeChild(tbody.childNodes[i].childNodes[cell]);
         }
         this.options.onClick(0, 0);
+        //Trigger event for editor update;
+        this._base.trigger('editableInput');
     },
 
     removeTable: function (e) {
@@ -419,6 +431,8 @@ Builder.prototype = {
 
         table.parentNode.removeChild(table);
         this.options.onClick(0, 0);
+        //Trigger event for editor update;
+        this._base.trigger('editableInput');
     }
 };
 
@@ -439,7 +453,7 @@ Table.prototype = {
         var html = this._html(rows, cols);
 
         this._editor.pasteHTML(
-            '<table class="medium-editor-table" id="medium-editor-table"' +
+            '<table class="medium-editor-table table-resizable" id="medium-editor-table"' +
             ' width="100%">' +
             '<tbody id="medium-editor-table-tbody">' +
             html +
@@ -459,6 +473,14 @@ Table.prototype = {
         tbody.removeAttribute('id');
         table.removeAttribute('id');
         placeCaretAtNode(this._doc, table.querySelector('td'), true);
+
+        //Resize stuff code here;
+        var newTableObject = $('.table-resizable').not('.ui-resizable');
+        $(newTableObject).resizable({
+            resize: function (event, element) {
+                this._editor.trigger('editableInput');
+            }
+        });
 
         this._editor.checkSelection();
     },
@@ -555,7 +577,7 @@ MediumEditorTable = MediumEditor.extensions.form.extend({
 
     aria: 'create table',
     action: 'table',
-    contentDefault: 'TBL',
+    contentDefault: '<i class="icon-table"></i>',
     contentFA: '<i class="fa fa-table"></i>',
 
     handleClick: function (event) {
@@ -606,7 +628,8 @@ MediumEditorTable = MediumEditor.extensions.form.extend({
                 }.bind(this),
                 ownerDocument: this.document,
                 rows: this.rows || 10,
-                columns: this.columns || 10
+                columns: this.columns || 10,
+                base: this.base
             });
 
             this.table = new Table(this.base);
