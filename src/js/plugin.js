@@ -28,7 +28,7 @@ MediumEditorTable = MediumEditor.extensions.form.extend({
     },
 
     hide: function (target) {
-        var self = target ? target : this
+        var self = target ? target : this;
         this.setInactive();
         this.builder.hide();
     },
