@@ -14,10 +14,21 @@ MediumEditorTable = MediumEditor.extensions.form.extend({
         event.preventDefault();
         event.stopPropagation();
 
-        this[this.isActive() === true ? 'hide' : 'show']();
+        var self = this;
+        this[this.isActive() === true ? 'hide' : 'show'](this);
+        if (this.isActive()) {
+            $('body').on('click', function () {
+                self.hide(self);
+            });
+        } else {
+            $('body').off('click', function () {
+                self.hide(self);
+            });
+        }
     },
 
-    hide: function () {
+    hide: function (target) {
+        var self = target ? target : this
         this.setInactive();
         this.builder.hide();
     },
