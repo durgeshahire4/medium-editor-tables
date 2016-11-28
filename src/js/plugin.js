@@ -38,13 +38,13 @@ MediumEditorTable = MediumEditor.extensions.form.extend({
 
         var range = MediumEditor.selection.getSelectionRange(this.document);
         if (!range) {
-            var node  = this.document.querySelector('.medium-editor-element');
-            var newrange = document.createRange();
-            newrange.setStart(node, 0);
-            newrange.setEnd(node, 0);
+            var mainNode = this.document.querySelector('.medium-editor-element'),
+                newRange = document.createRange();
+            newRange.setStart(mainNode, 0);
+            newRange.setEnd(mainNode, 0);
             var sel = this.document.getSelection();
             sel.removeAllRanges();
-            sel.addRange(newrange);
+            sel.addRange(newRange);
             range = MediumEditor.selection.getSelectionRange(this.document);
         }
         if (range.startContainer.nodeName.toLowerCase() === 'td' ||

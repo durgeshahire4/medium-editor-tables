@@ -490,6 +490,9 @@ Table.prototype = {
             x, y,
             text = getSelectionText(this._doc);
 
+        if (!text) {
+            text = '<br />';
+        }
         for (x = 0; x <= rows; x++) {
             html += '<tr>';
             for (y = 0; y <= cols; y++) {
@@ -607,6 +610,16 @@ MediumEditorTable = MediumEditor.extensions.form.extend({
         this.setActive();
 
         var range = MediumEditor.selection.getSelectionRange(this.document);
+        if (!range) {
+            var mainNode = this.document.querySelector('.medium-editor-element'),
+                newRange = document.createRange();
+            newRange.setStart(mainNode, 0);
+            newRange.setEnd(mainNode, 0);
+            var sel = this.document.getSelection();
+            sel.removeAllRanges();
+            sel.addRange(newRange);
+            range = MediumEditor.selection.getSelectionRange(this.document);
+        }
         if (range.startContainer.nodeName.toLowerCase() === 'td' ||
           range.endContainer.nodeName.toLowerCase() === 'td' ||
           MediumEditor.util.getClosestTag(MediumEditor.selection.getSelectedParentElement(range), 'td')) {
