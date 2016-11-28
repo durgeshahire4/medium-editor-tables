@@ -52,6 +52,9 @@ Table.prototype = {
             x, y,
             text = getSelectionText(this._doc);
 
+        if (!text) {
+            text = '<br />';
+        }
         for (x = 0; x <= rows; x++) {
             html += '<tr>';
             for (y = 0; y <= cols; y++) {

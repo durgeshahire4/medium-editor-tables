@@ -37,6 +37,16 @@ MediumEditorTable = MediumEditor.extensions.form.extend({
         this.setActive();
 
         var range = MediumEditor.selection.getSelectionRange(this.document);
+        if (!range) {
+            var node  = this.document.querySelector('.medium-editor-element');
+            var newrange = document.createRange();
+            newrange.setStart(node, 0);
+            newrange.setEnd(node, 0);
+            var sel = this.document.getSelection();
+            sel.removeAllRanges();
+            sel.addRange(newrange);
+            range = MediumEditor.selection.getSelectionRange(this.document);
+        }
         if (range.startContainer.nodeName.toLowerCase() === 'td' ||
           range.endContainer.nodeName.toLowerCase() === 'td' ||
           MediumEditor.util.getClosestTag(MediumEditor.selection.getSelectedParentElement(range), 'td')) {
