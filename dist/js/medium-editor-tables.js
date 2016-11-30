@@ -609,8 +609,12 @@ MediumEditorTable = MediumEditor.extensions.form.extend({
     show: function () {
         this.setActive();
 
-        var range = MediumEditor.selection.getSelectionRange(this.document);
-        if (!range) {
+        var range = MediumEditor.selection.getSelectionRange(this.document),
+            isEditorSelection;
+        if (range) {
+            isEditorSelection = this.isNodeEditor(range.commonAncestorContainer, this.document.querySelector('.medium-editor-element'));
+        }
+        if (!range || !isEditorSelection) {
             var mainNode = this.document.querySelector('.medium-editor-element'),
                 newRange = document.createRange();
             newRange.setStart(mainNode, 0);
@@ -630,6 +634,16 @@ MediumEditorTable = MediumEditor.extensions.form.extend({
             this.builder.setBuilder();
         }
         this.builder.show(this.button.offsetLeft);
+    },
+
+    isNodeEditor: function (node, editor) {
+        while (node) {
+            if (node === editor) {
+                return true;
+            }
+            node = node.parentNode;
+        }
+        return false;
     },
 
     getForm: function () {
