@@ -37,10 +37,11 @@ Table.prototype = {
         placeCaretAtNode(this._doc, table.querySelector('td'), true);
 
         //Resize stuff code here;
-        var newTableObject = $('.table-resizable').not('.ui-resizable');
+        var _this = this,
+            newTableObject = $('.table-resizable').not('.ui-resizable');
         $(newTableObject).resizable({
             resize: function (event, element) {
-                this._editor.trigger('editableInput');
+                _this._editor.trigger('editableInput');
             }
         });
 
