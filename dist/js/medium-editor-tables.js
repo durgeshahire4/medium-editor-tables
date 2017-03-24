@@ -43,20 +43,28 @@ function getSelectionStart(doc) {
 }
 
 function placeCaretAtNode(doc, node, before) {
+    var isIE = /*@cc_on!@*/false || !!document.documentMode;
     if (doc.getSelection !== undefined && node) {
-        var range = doc.createRange(),
-            selection = doc.getSelection();
+        if (!isIE) {
+            var range = doc.createRange(),
+                selection = doc.getSelection();
 
-        if (before) {
-            range.setStartBefore(node);
+            if (before) {
+                range.setStartBefore(node);
+            } else {
+                range.setStartAfter(node);
+            }
+
+            range.collapse(true);
+
+            selection.removeAllRanges();
+            selection.addRange(range);
         } else {
-            range.setStartAfter(node);
+            var rangeObj = document.body.createTextRange();
+            rangeObj.moveToElementText(node);
+            rangeObj.moveStart('character', 1);
+            rangeObj.select();
         }
-
-        range.collapse(true);
-
-        selection.removeAllRanges();
-        selection.addRange(range);
     }
 }
 
