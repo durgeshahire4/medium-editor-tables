@@ -46,7 +46,8 @@ function placeCaretAtNode(doc, node, before) {
         } else {
             var rangeObj = document.body.createTextRange();
             rangeObj.moveToElementText(node);
-            rangeObj.moveStart('character', 1);
+            rangeObj.moveStart('character', 0);
+            rangeObj.collapse(true);
             rangeObj.select();
         }
     }
