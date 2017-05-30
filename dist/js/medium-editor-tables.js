@@ -36,7 +36,7 @@ function getSelectionText(doc) {
 }
 
 function getSelectionStart(doc) {
-    var node = doc.getSelection().anchorNode,
+    var node = doc.getSelection().baseNode ? doc.getSelection().baseNode : doc.getSelection().anchorNode,
         startNode = (node && node.nodeType === 3 ? node.parentNode : node);
 
     return startNode;
@@ -62,7 +62,8 @@ function placeCaretAtNode(doc, node, before) {
         } else {
             var rangeObj = document.body.createTextRange();
             rangeObj.moveToElementText(node);
-            rangeObj.moveStart('character', 1);
+            rangeObj.moveStart('character', 0);
+            rangeObj.collapse(true);
             rangeObj.select();
         }
     }
