@@ -36,7 +36,7 @@ function getSelectionText(doc) {
 }
 
 function getSelectionStart(doc) {
-    var node = doc.getSelection().baseNode ? doc.getSelection().baseNode : doc.getSelection().anchorNode,
+    var node = $(doc.getSelection().baseNode ? doc.getSelection().baseNode : doc.getSelection().anchorNode).closest('td')[0],
         startNode = (node && node.nodeType === 3 ? node.parentNode : node);
 
     return startNode;
